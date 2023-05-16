@@ -6,16 +6,24 @@ const express = require('express');
 //create an object for the cors (cross-origin resource sharing) library
 const cors = require('cors');
 //const { response } = require('express');
-const data = require('./data/weather.json')
+const data = require('../src/weather.json')
 //initialize app
 const app = express();
+const serverless = require("serverless-http");
+// Create a router to handle routes
+const router = express.Router();
 //allows cross-origin resource sharing
 app.use(cors());
-
+// Define a route that responds with a JSON object when a GET request is made to the root path
+router.get("/", (req, res) => {
+    res.json({
+      hello: "hi!"
+    });
+  });
 
 
 //configure routes to retrive weather data 
-app.get('/weather', (request, response) => {
+router.get('/weather', (request, response) => {
     //query parameters
     let {lat, lon, searchQuery} = request.query; 
 
@@ -44,7 +52,15 @@ app.get('/weather', (request, response) => {
 
 });
 
-//start app
+app.use ((error, request, response, next) => {
+    console.log(error);
+    response.status(500).send(error.message);
+});
+
+// Use the router to handle requests to the `/.netlify/functions/api` path
+app.use(`/.netlify/functions/server`, router);
+
+//start app 
 app.listen(3001);
 
 // Define a Forecast class to represent weather forecast data
@@ -57,3 +73,7 @@ class Forecast {
         this.city_name = city_name
     }
 };
+
+// Export the app and the serverless function
+module.exports = app;
+module.exports.handler = serverless(app);
