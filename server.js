@@ -30,7 +30,7 @@ app.get('/weather', (request, response) => {
     })
 
     if (locationData === undefined) { //sends error response code
-        response.status(404).send({message: 'city not found'});
+        response.status(500).send({message: 'city not found'});
         return;
     };
 
@@ -43,6 +43,7 @@ app.get('/weather', (request, response) => {
     response.send(forecastFinder)
 
 });
+
 
 //start app
 app.listen(3001);
