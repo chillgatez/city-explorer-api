@@ -52,20 +52,8 @@ router.get('/weather', (request, response) => {
 
 });
 
-<<<<<<< HEAD:server.js
 
 //start app
-=======
-app.use ((error, request, response, next) => {
-    console.log(error);
-    response.status(500).send(error.message);
-});
-
-// Use the router to handle requests to the `/.netlify/functions/api` path
-app.use(`/.netlify/functions/server`, router);
-
-//start app 
->>>>>>> 61a6e4cc4159e156da9fc5c0d8bb6048d8949e63:src/server.js
 app.listen(3001);
 
 // Define a Forecast class to represent weather forecast data
