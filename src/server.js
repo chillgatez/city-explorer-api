@@ -6,24 +6,16 @@ const express = require('express');
 //create an object for the cors (cross-origin resource sharing) library
 const cors = require('cors');
 //const { response } = require('express');
-const data = require('../src/weather.json')
+const data = require('./data/weather.json')
 //initialize app
 const app = express();
-const serverless = require("serverless-http");
-// Create a router to handle routes
-const router = express.Router();
 //allows cross-origin resource sharing
 app.use(cors());
 // Define a route that responds with a JSON object when a GET request is made to the root path
-router.get("/", (req, res) => {
-    res.json({
-      hello: "hi!"
-    });
-  });
 
 
 //configure routes to retrive weather data 
-router.get('/weather', (request, response) => {
+app.get('/weather', (request, response) => {
     //query parameters
     let {lat, lon, searchQuery} = request.query; 
 
@@ -52,7 +44,6 @@ router.get('/weather', (request, response) => {
 
 });
 
-
 //start app
 app.listen(3001);
 
@@ -66,7 +57,3 @@ class Forecast {
         this.city_name = city_name
     }
 };
-
-// Export the app and the serverless function
-module.exports = app;
-module.exports.handler = serverless(app);
