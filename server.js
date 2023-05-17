@@ -36,7 +36,7 @@ app.get('/weather', (request, response) => {
 
     // creates an array of forecast objects by mapping over the data of the locationsData object
     let forecastFinder = locationData.data.map(obj => {
-        return new Forecast(obj.valid_date, obj.weather.description, locationData.lat, locationData.lon, locationData.city_name)
+        return new Forecast(obj.valid_date, obj.weather.description, obj.high_temp, obj.low_temp, locationData.lat, locationData.lon, locationData.city_name)
     });
 
     // sends full array back to client
@@ -46,12 +46,15 @@ app.get('/weather', (request, response) => {
 
 //start app
 app.listen(3001);
+console.log("hello"); 
 
 // Define a Forecast class to represent weather forecast data
 class Forecast {
-    constructor(date, description, lon, lat, city_name) {
+    constructor(date, description, high_temp, low_temp, lon, lat, city_name) {
         this.date = date;
         this.description = description;
+        this.high = high_temp;
+        this.low = low_temp;
         this.lon = lon;
         this.lat = lat;
         this.city_name = city_name
