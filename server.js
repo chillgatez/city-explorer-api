@@ -6,41 +6,55 @@ const express = require('express');
 //create an object for the cors (cross-origin resource sharing) library
 const cors = require('cors');
 //const { response } = require('express');
-const data = require('./data/weather.json')
+const axios = require('axios');
 //initialize app
 const app = express();
 //allows cross-origin resource sharing
 app.use(cors());
 // Define a route that responds with a JSON object when a GET request is made to the root path
 
+const weatherBit = 'f1c2483a7c184b72884c4bebe83d585e'
+
 
 //configure routes to retrive weather data 
-app.get('/weather', (request, response) => {
-    //query parameters
-    let {lat, lon, searchQuery} = request.query; 
+app.get('/weather', (req, res) => {
+    let {lat, lon} = req.query;
 
-    //.find method searches json file for location data
-    let locationData = data.find(location => {
-        //checks if locationData matches data from JSON file
-        if (searchQuery === location.city_name || lat === location.lat || lon === location.lon) {
-            return true;
-        } else { // returns error code if no match found
-            return false; 
-        }
+    let forecastData = axios.get(`http://api.weatherbit.io/v2.0/forecast/daily?city=${lat}&lon=${lon}&key=${weatherBit}`)
+    
+    .then((response) => {
+        console.log(response)
+        let forecastFinder = response.data.data.map(obj => {
+        return new Forecast(obj.datetime, obj.weather.description, obj.high_temp, obj.low_temp,)})
+        res.send(forecastFinder)
+
     })
 
-    if (locationData === undefined) { //sends error response code
-        response.status(500).send({message: 'city not found'});
-        return;
-    };
+    //query parameters
+    // let {lat, lon, searchQuery} = request.query; 
+
+    // //.find method searches json file for location data
+    // let locationData = data.find(location => {
+    //     //checks if locationData matches data from JSON file
+    //     if (searchQuery === location.city_name || lat === location.lat || lon === location.lon) {
+    //         return true;
+    //     } else { // returns error code if no match found
+    //         return false; 
+    //     }
+    // })
+
+    // if (locationData === undefined) { //sends error response code
+    //     response.status(500).send({message: 'city not found'});
+    //     return;
+    // };
 
     // creates an array of forecast objects by mapping over the data of the locationsData object
-    let forecastFinder = locationData.data.map(obj => {
-        return new Forecast(obj.valid_date, obj.weather.description, obj.high_temp, obj.low_temp, locationData.lat, locationData.lon, locationData.city_name)
-    });
+    // let forecastFinder = locationData.data.map(obj => {
+    //     return new Forecast(obj.valid_date, obj.weather.description, obj.high_temp, obj.low_temp, locationData.lat, locationData.lon, locationData.city_name)
+    // });
 
-    // sends full array back to client
-    response.send(forecastFinder)
+    // // sends full array back to client
+    // response.send(forecastFinder)
 
 });
 
@@ -50,13 +64,10 @@ console.log("hello");
 
 // Define a Forecast class to represent weather forecast data
 class Forecast {
-    constructor(date, description, high_temp, low_temp, lon, lat, city_name) {
+    constructor(date, description, high_temp, low_temp) {
         this.date = date;
         this.description = description;
         this.high = high_temp;
         this.low = low_temp;
-        this.lon = lon;
-        this.lat = lat;
-        this.city_name = city_name
     }
 };
