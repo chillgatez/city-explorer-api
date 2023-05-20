@@ -43,7 +43,7 @@ app.get('/weather', (req, res) => {
     let { lat, lon } = req.query;
     const weatherBit = 'f1c2483a7c184b72884c4bebe83d585e';
 
-    axios.get(`http://api.weatherbit.io/v2.0/forecast/daily?city=${lat}&lon=${lon}&key=${weatherBit}`)
+    axios.get(`http://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&key=${weatherBit}`)
 
         .then((response) => {
 
