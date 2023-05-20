@@ -36,6 +36,10 @@ class Movie {
 };
 
 
+app.get('/', (req, res) => {
+    res.send('hello city explorer!');
+    console.log ('hello city explorer!')
+});
 
 //configure routes to retrive weather data -- Define a route that responds with a JSON object when a GET request is made to the root path
 
@@ -43,19 +47,21 @@ app.get('/weather', (req, res) => {
     let { lat, lon } = req.query;
     const weatherBit = 'f1c2483a7c184b72884c4bebe83d585e';
 
-    axios.get(`http://api.weatherbit.io/v2.0/forecast/daily?city=${lat}&lon=${lon}&key=${weatherBit}`)
+    axios.get(`http://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&key=${weatherBit}`)
 
         .then((response) => {
 
             console.log(response)
-            const forecastData = response.data.data.map(obj => {
+            const forecastData = response.data.data.slice(0,3).map(obj => {
                 return new Forecast(obj.datetime, obj.weather.description, obj.high_temp, obj.low_temp,)
             });
+
+
             res.send(forecastData);
         })
 
-        .catch (error => {
-            res.status(500).send({error: 'city not founpmnd'});
+        .catch(error => {
+            res.status(500).json({ error: 'an error occured while fetching forecast data' });
         });
 });
 
@@ -72,9 +78,9 @@ app.get('/movies', (req, res) => {
             })
             res.send(movieFinder);
         })
-        
-        .catch (error => {
-            res.status(500).send({error: 'The ID is invalid.'})
+
+        .catch(error => {
+            res.status(500).send({ error: 'The ID is invalid.' })
         })
 
 });
@@ -82,4 +88,4 @@ app.get('/movies', (req, res) => {
 
 //start app
 app.listen(3001);
-console.log("hello"); 
+console.log ('hello city explorer!')
