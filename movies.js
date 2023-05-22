@@ -29,13 +29,11 @@ router.get('/movies', (req, res) => {
     const movieDB = '5e216003b3fed6a5e05e2a6023f8a49f'
     const cacheKey = `${searchQuery}`;
 
-
     const getCache = cache.get(cacheKey);
 
     if (getCache !== undefined) {
         res.send(getCache)
     } else {
-
 
         axios.get(`https://api.themoviedb.org/3/search/multi?&query=${searchQuery}&api_key=${movieDB}`)
 
@@ -44,7 +42,7 @@ router.get('/movies', (req, res) => {
                 let movieFinder = response.data.results.map(obj => {
                     return new Movie(obj.original_title || obj.original_name, obj.overview, obj.vote_average, obj.vote_count, obj.poster_path, obj.popularity, obj.release_date)
                 })
-                cache.set(getCache, movieFinder, 86400)
+                cache.set(cacheKey, movieFinder, 86400)
                 res.send(movieFinder);
             })
 

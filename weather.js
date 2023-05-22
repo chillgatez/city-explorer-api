@@ -41,7 +41,7 @@ router.get('/weather', (req, res) => {
                 return new Forecast(obj.datetime, obj.weather.description, obj.high_temp, obj.low_temp,)
             });
             
-            cache.set(getCache, forecastData, 86400)
+            cache.set(cacheKey, forecastData, 86400)
             res.send(forecastData);
         })
         
