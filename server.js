@@ -11,8 +11,15 @@ const express = require('express');
 const cors = require('cors');
 //importing axios
 const axios = require('axios');
+//create an object for node-cache library
+const NodeCache = require('node-cache')
 //initialize app
 const app = express();
+
+//creating new NodeCache object
+const weatherCache = new NodeCache();
+//creating new NodeCache object
+const movieCache = new NodeCache();
 //allows cross-origin resource sharing
 app.use(cors());
 
