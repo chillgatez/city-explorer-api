@@ -2,10 +2,6 @@
 const express = require('express');
 //importing axios
 const axios = require('axios');
-//importing node-cache
-const NodeCache = require('node-cache');
-//creating instance of node-cache
-const cache = new NodeCache();
 //initialize app
 const router = express.Router();
 
@@ -27,7 +23,6 @@ class Movie {
 router.get('/movies', (req, res) => {
     let { searchQuery } = req.query;
     const movieDB = '5e216003b3fed6a5e05e2a6023f8a49f'
-    const cacheKey = `${searchQuery}`;
 
     const getCache = cache.get(cacheKey);
 
@@ -44,12 +39,11 @@ router.get('/movies', (req, res) => {
                 })
                 cache.set(cacheKey, movieFinder, 86400)
                 res.send(movieFinder);
-            })
+        })
 
-            .catch(error => {
-                res.status(500).send({ error: 'The ID is invalid.' })
-            })
-    }
+        .catch(error => {
+            res.status(500).send({ error: 'The ID is invalid.' })
+        })
 
 });
 

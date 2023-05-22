@@ -2,11 +2,7 @@
 const express = require('express');
 //importing axios
 const axios = require('axios');
-//importing node-cache
-const NodeCache = require('node-cache');
-//creating instance of node-cache
-const cache = new NodeCache();
-//initialize app
+//initialize appr
 const router = express.Router();
 
 // Define a Forecast class to represent weather forecast data
@@ -23,32 +19,23 @@ class Forecast {
 router.get('/weather', (req, res) => {
     let { lat, lon } = req.query;
     const weatherBit = 'f1c2483a7c184b72884c4bebe83d585e';
-    const cacheKey = `${lat}`
 
-    const getCache = cache.get(cacheKey);
+    axios.get(`http://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&key=${weatherBit}`)
 
-    if (getCache !== undefined) {
-        res.send(getCache);
-    } else {
-
-        
-        axios.get(`http://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&key=${weatherBit}`)
-        
         .then((response) => {
-            
+
             console.log(response)
             const forecastData = response.data.data.slice(0,3).map(obj => {
                 return new Forecast(obj.datetime, obj.weather.description, obj.high_temp, obj.low_temp,)
             });
-            
+      
             cache.set(cacheKey, forecastData, 86400)
             res.send(forecastData);
         })
-        
+
         .catch(error => {
             res.status(500).json({ error: 'an error occured while fetching forecast data' });
         });
-    }
 });
 
 module.exports = router;
