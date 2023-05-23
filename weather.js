@@ -28,8 +28,8 @@ router.get('/weather', (req, res) => {
             const forecastData = response.data.data.slice(0,3).map(obj => {
                 return new Forecast(obj.datetime, obj.weather.description, obj.high_temp, obj.low_temp,)
             });
-
-
+      
+            cache.set(cacheKey, forecastData, 86400)
             res.send(forecastData);
         })
 
